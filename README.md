@@ -11,7 +11,8 @@ Multi-agent analytics engine where autonomous agents (DataRetrieval, Explainabil
 - **Frontend:** React (Vite) exec dashboard
 
 ## Project Layout
-aagentic-insights-engine/
+```
+agentic-insights-engine/
 ├── backend/                              # Core FastAPI backend & agents
 │   ├── app.py                            # FastAPI entrypoint (API routes)
 │   ├── agents/                           # Autonomous multi-agent system
@@ -49,7 +50,7 @@ aagentic-insights-engine/
 │
 ├── requirements.txt                      # Python dependencies
 └── .env.example                          # Environment variable template
-
+```
 
 
 ## Quickstart (Dev)
