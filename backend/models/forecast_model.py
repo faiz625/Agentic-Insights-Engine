@@ -6,27 +6,29 @@ import xgboost as xgb
 
 class ForecastModel:
     """
-    A simple supervised regressor for demo purposes.
-    Expects a numeric target 'y' with numeric features.
+    Simple XGBoost regressor for demo. Tuned lighter to reduce Windows binary hiccups.
     """
     def __init__(self):
         self.model = xgb.XGBRegressor(
-            n_estimators=200,
-            max_depth=5,
+            n_estimators=120,
+            max_depth=4,
             learning_rate=0.1,
             subsample=0.9,
             colsample_bytree=0.9,
             random_state=42,
+            tree_method="hist",           # safer CPU path
+            enable_categorical=False
         )
         self.fitted = False
-        self.feature_names = []
+        self.feature_names: list[str] = []
 
     def fit(self, df: pd.DataFrame) -> Dict[str, Any]:
-        numeric = df.select_dtypes(include="number")
+        numeric = df.select_dtypes(include="number").copy()
         if "y" not in numeric.columns:
-            # Create a synthetic target for demo if needed
-            numeric = numeric.copy()
-            numeric["y"] = numeric.iloc[:, 0] * 0.5 + numeric.iloc[:, 1 % numeric.shape[1]] * 0.25
+            cols = numeric.columns.tolist()
+            a = numeric[cols[0]]
+            b = numeric[cols[1]] if len(cols) > 1 else a
+            numeric["y"] = 0.5 * a + 0.25 * b
 
         X = numeric.drop(columns=["y"])
         y = numeric["y"]

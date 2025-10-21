@@ -102,7 +102,7 @@ Notes
 - LLM Integration: Uses Gemini (Vertex AI) if configured; otherwise falls back to a local template LLM stub.
 - Explainability: SHAP demo uses an in-memory XGBoost model trained on the sample dataset.
 
-# .env.example
+## .env.example
 ```
 # ==== BigQuery ====
 PROJECT_ID=your-gcp-project

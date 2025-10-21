@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
 class Config:
@@ -21,3 +20,6 @@ class Config:
     VERTEX_PROJECT_ID = os.getenv("VERTEX_PROJECT_ID")
 
     DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "sample_data.csv")
+
+    # ---- safety switch: skip heavy SHAP if binaries misbehave (Windows) ----
+    SAFE_EXPLAIN = os.getenv("SAFE_EXPLAIN", "false").lower() == "true"
