@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    container_name: agentic-api
+    environment:
+      # ---- Config (override in .env if needed) ----
+      API_HOST: "0.0.0.0"
+      API_PORT: "8000"
+      LOG_LEVEL: "INFO"
+      USE_BIGQUERY: "${USE_BIGQUERY:-false}"
+      USE_VERTEX_GEMINI: "${USE_VERTEX_GEMINI:-false}"
+      SAFE_EXPLAIN: "${SAFE_EXPLAIN:-true}"
+      PROJECT_ID: "${PROJECT_ID:-}"
+      DATASET_ID: "${DATASET_ID:-}"
+      TABLE_ID: "${TABLE_ID:-}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-gemini-1.5-pro}"
+      VERTEX_LOCATION: "${VERTEX_LOCATION:-us-central1}"
+      VERTEX_PROJECT_ID: "${VERTEX_PROJECT_ID:-}"
+      GOOGLE_APPLICATION_CREDENTIALS: "/secrets/gcp-sa.json"
+    volumes:
+      # Mount sample data (read-only)
+      - ./backend/data:/app/backend/data:ro
+      # Mount a service account key if using BigQuery/Vertex
+      # - ./secrets/gcp-sa.json:/secrets/gcp-sa.json:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: docker/streamlit.Dockerfile
+    container_name: agentic-streamlit
+    environment:
+      # Point to API service name for in-network call
+      # Streamlit app uses st.secrets("API_BASE"); we provide it here:
+      STREAMLIT_SERVER_PORT: "8501"
+    volumes:
+      - ./streamlit_dashboard:/app/streamlit_dashboard:ro
+      - ./backend:/app/backend:ro
+      # Inject Streamlit secrets at runtime
+      - ./secrets/streamlit-secrets.toml:/root/.streamlit/secrets.toml:ro
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    container_name: agentic-frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+# Optional named network (Docker will create a default network otherwise)
+# networks:
+#   default:
+#     name: agentic-net

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { runOrchestrator } from "./api";
-import InsightCard from "./components/InsightCard";
-import Chart from "./components/Chart";
+import InsightCard from "./componenets/InsightCard.jsx";
+import Chart from "./componenets/Chart.jsx";
 
 export default function App() {
   const [sql, setSql] = useState("");
