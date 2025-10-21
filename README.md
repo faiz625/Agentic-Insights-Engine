@@ -1,99 +1,110 @@
 # Agentic Insights Engine (Enterprise Analytics Copilot)
 
-Multi-agent analytics engine where autonomous agents (DataRetrieval, Explainability, Visualization) collaborate to generate insights, detect anomalies, and surface recommendations from enterprise data.
+A multi-agent analytics system where autonomous agents — **DataRetrieval**, **Explainability**, and **Visualization** — collaborate to generate insights, detect anomalies, and surface business recommendations from enterprise data.
 
-## Stack
-- **Backend API:** FastAPI
-- **Agents & LLM:** LangChain + Gemini (Vertex AI) via pluggable client (falls back to local LLM stub)
-- **Data:** BigQuery (with local CSV/SQLite fallback for dev)
-- **Explainability:** SHAP (example with XGBoost)
-- **Dashboards:** Streamlit (analyst console)
-- **Frontend:** React (Vite) exec dashboard
+---
+
+## Overview
+
+This project demonstrates how specialized AI agents can work together to perform end-to-end analytics: querying data, generating explanations, and visualizing insights autonomously.  
+It includes a FastAPI backend, a Streamlit dashboard for analysts, and a React (Vite) frontend for executives.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|:------|:------------|
+| **Backend API** | FastAPI |
+| **Agents & LLM** | LangChain + Gemini (Vertex AI) via pluggable client (fallback: local LLM stub) |
+| **Data Layer** | BigQuery (CSV/SQLite fallback for local development) |
+| **Explainability** | SHAP (demonstrated with XGBoost) |
+| **Dashboards** | Streamlit (Analyst Console) |
+| **Frontend** | React (Vite-powered Executive Dashboard) |
 
 ## Project Layout
 ```
 agentic-insights-engine/
-├── backend/                              # Core FastAPI backend & agents
-│   ├── app.py                            # FastAPI entrypoint (API routes)
-│   ├── agents/                           # Autonomous multi-agent system
-│   │   ├── __init__.py
-│   │   ├── orchestrator.py               # Coordinates Data, Explainability & Viz agents
-│   │   ├── data_retrieval.py             # Pulls data from BigQuery / CSV fallback
-│   │   ├── explainability.py             # SHAP-based model interpretation
-│   │   ├── visualization.py              # Prepares chart-friendly payloads
-│   │   └── llm_client.py                 # Gemini / Vertex AI integration (or stub)
-│   ├── services/                         # External integrations
-│   │   ├── bigquery_client.py            # Query abstraction for BigQuery
-│   │   └── model_store.py                # Lightweight in-memory model registry
-│   ├── models/
-│   │   └── forecast_model.py             # Example XGBoost model for demo forecasting
-│   ├── utils/                            # Shared configs and logging
-│   │   ├── config.py
-│   │   └── logger.py
-│   └── data/
-│       └── sample_data.csv               # Local dev dataset fallback
+├── backend/ # Core FastAPI backend & agents
+│ ├── app.py # FastAPI entrypoint (API routes)
+│ ├── agents/ # Autonomous multi-agent system
+│ │ ├── init.py
+│ │ ├── orchestrator.py # Coordinates Data, Explainability & Viz agents
+│ │ ├── data_retrieval.py # Pulls data from BigQuery / CSV fallback
+│ │ ├── explainability.py # SHAP-based model interpretation
+│ │ ├── visualization.py # Prepares chart-friendly payloads
+│ │ └── llm_client.py # Gemini / Vertex AI integration (or stub)
+│ ├── services/ # External integrations
+│ │ ├── bigquery_client.py # Query abstraction for BigQuery
+│ │ └── model_store.py # Lightweight in-memory model registry
+│ ├── models/
+│ │ └── forecast_model.py # Example XGBoost model for demo forecasting
+│ ├── utils/
+│ │ ├── config.py # Configuration and environment management
+│ │ └── logger.py # Centralized logging setup
+│ └── data/
+│ └── sample_data.csv # Local dev dataset fallback
 │
-├── streamlit_dashboard/                  # Analyst-facing Streamlit app
-│   └── app.py                            # UI to trigger orchestrator + display insights
+├── streamlit_dashboard/ # Analyst-facing Streamlit app
+│ └── app.py # UI to trigger orchestrator & display insights
 │
-├── frontend/                             # React/Vite executive dashboard
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   └── src/
-│       ├── main.jsx
-│       ├── App.jsx
-│       ├── api.js
-│       └── components/
-│           ├── InsightCard.jsx
-│           └── Chart.jsx
+├── frontend/ # React/Vite executive dashboard
+│ ├── index.html
+│ ├── package.json
+│ ├── vite.config.js
+│ └── src/
+│ ├── main.jsx
+│ ├── App.jsx
+│ ├── api.js
+│ └── components/
+│ ├── InsightCard.jsx
+│ └── Chart.jsx
 │
-├── requirements.txt                      # Python dependencies
-└── .env.example                          # Environment variable template
+├── requirements.txt # Python dependencies
+└── .env.example # Environment variable template
 ```
 
+## Quickstart (Development)
 
-## Quickstart (Dev)
-1) Create venv and install deps:
+### 1. Setup Environment
+
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
 cp .env.example .env
-# (optional) set GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID, DATASET_ID, TABLE_ID, GEMINI_MODEL etc.
-
-
+```
+(Optional) configure environment variables such as:
+GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID, DATASET_ID, TABLE_ID, GEMINI_MODEL, etc.
+```
+2. Run Backend
+```
 uvicorn backend.app:app --reload --port 8000
-
-
+```
+3. Run Streamlit Dashboard
+```
 streamlit run streamlit_dashboard/app.py
-
-
+```
+4. Run Frontend (React/Vite)
+```
 cd frontend
 npm install
 npm run dev
+```
 
-
-Open:
-
-API: http://localhost:8000/docs
-
-Streamlit: http://localhost:8501
-
-React: http://localhost:5173
+##Local URLs
+Service	| URL
+API Docs (FastAPI) | http://localhost:8000/docs
+Streamlit Dashboard | http://localhost:8501
+React Dashboard | http://localhost:5173
 
 Notes
+- BigQuery Fallback: If credentials are missing, the system uses backend/data/sample_data.csv.
+- LLM Integration: Uses Gemini (Vertex AI) if configured; otherwise falls back to a local template LLM stub.
+- Explainability: SHAP demo uses an in-memory XGBoost model trained on the sample dataset.
 
-If BigQuery creds are missing, the engine uses backend/data/sample_data.csv.
-
-LLM client uses Gemini if configured; otherwise uses a local template stub.
-
-SHAP demo uses an in-memory XGBoost model fitted on the sample dataset to illustrate explainability.
-
----
-
-# 2) `.env.example`
-```bash
+#.env.example
+```
 # ==== BigQuery ====
 PROJECT_ID=your-gcp-project
 DATASET_ID=your_dataset
@@ -113,3 +124,4 @@ LOG_LEVEL=INFO
 # ==== Feature Flags ====
 USE_BIGQUERY=false
 USE_VERTEX_GEMINI=false
+```
