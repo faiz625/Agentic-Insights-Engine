@@ -12,40 +12,44 @@ Multi-agent analytics engine where autonomous agents (DataRetrieval, Explainabil
 
 ## Project Layout
 agentic-insights-engine/
-backend/
-    app.py
-    agents/
-        init.py
-        orchestrator.py
-        data_retrieval.py
-        explainability.py
-        visualization.py
-        llm_client.py
-    services/
-        bigquery_client.py
-        model_store.py
-    models/
-        forecast_model.py
-    utils/
-        config.py
-        logger.py
-    data/
-        sample_data.csv
-streamlit_dashboard/
-    app.py
-frontend/
-    index.html
-    package.json
-    vite.config.js
-    src/
-        main.jsx
-        App.jsx
-        api.js
-        components/
-            InsightCard.jsx
-            Chart.jsx
-requirements.txt
-.env.example
+├── backend/                              # Core FastAPI backend & agents
+│   ├── app.py                            # FastAPI entrypoint (API routes)
+│   ├── agents/                           # Autonomous multi-agent system
+│   │   ├── __init__.py
+│   │   ├── orchestrator.py               # Coordinates Data, Explainability & Viz agents
+│   │   ├── data_retrieval.py             # Pulls data from BigQuery / CSV fallback
+│   │   ├── explainability.py             # SHAP-based model interpretation
+│   │   ├── visualization.py              # Prepares chart-friendly payloads
+│   │   └── llm_client.py                 # Gemini / Vertex AI integration (or stub)
+│   ├── services/                         # External integrations
+│   │   ├── bigquery_client.py            # Query abstraction for BigQuery
+│   │   └── model_store.py                # Lightweight in-memory model registry
+│   ├── models/
+│   │   └── forecast_model.py             # Example XGBoost model for demo forecasting
+│   ├── utils/                            # Shared configs and logging
+│   │   ├── config.py
+│   │   └── logger.py
+│   └── data/
+│       └── sample_data.csv               # Local dev dataset fallback
+│
+├── streamlit_dashboard/                  # Analyst-facing Streamlit app
+│   └── app.py                            # UI to trigger orchestrator + display insights
+│
+├── frontend/                             # React/Vite executive dashboard
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── main.jsx
+│       ├── App.jsx
+│       ├── api.js
+│       └── components/
+│           ├── InsightCard.jsx
+│           └── Chart.jsx
+│
+├── requirements.txt                      # Python dependencies
+└── .env.example                          # Environment variable template
+
 
 
 ## Quickstart (Dev)
