@@ -90,6 +90,38 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### Docker Frontend Build (Vite)
+
+If building the frontend with Docker, the recommended Dockerfile pattern is:
+
+```dockerfile
+# ---- Build stage ----
+FROM node:20-bullseye AS build
+WORKDIR /app
+
+# 1) Install deps (include devDeps so vite exists)
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci --omit=optional || npm install --production=false
+
+# 2) Ensure vite + plugin present (belt & suspenders)
+RUN npm install -D vite @vitejs/plugin-react
+
+# 3) Copy source
+COPY frontend/ ./
+
+# 4) Build via Node entrypoint (avoids shell issues)
+RUN node ./node_modules/vite/bin/vite.js build
+```
+
+If you see `vite: not found` errors, use the direct Node.js entrypoint as above. This bypasses shell wrapper issues in some Linux containers.
+
+**Troubleshooting:**
+- Ensure `vite` and `@vitejs/plugin-react` are listed in `devDependencies` in `package.json`.
+- Do not copy `node_modules` from host; let Docker install them.
+- If you need to debug, add `RUN ls -l node_modules/.bin` before the build step to verify Vite is present.
+
+---
 ## Local URLs
 | Service | URL |
 |:------|:------------|
