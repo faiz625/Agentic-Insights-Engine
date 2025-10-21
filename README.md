@@ -73,20 +73,19 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-```
 (Optional) configure environment variables such as:
 GOOGLE_APPLICATION_CREDENTIALS, PROJECT_ID, DATASET_ID, TABLE_ID, GEMINI_MODEL, etc.
 ```
 2. Run Backend
-```
+```bash
 uvicorn backend.app:app --reload --port 8000
 ```
 3. Run Streamlit Dashboard
-```
+```bash
 streamlit run streamlit_dashboard/app.py
 ```
 4. Run Frontend (React/Vite)
-```
+```bash
 cd frontend
 npm install
 npm run dev
