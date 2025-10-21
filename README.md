@@ -90,19 +90,19 @@ cd frontend
 npm install
 npm run dev
 ```
-
-##Local URLs
-Service	| URL
-API Docs (FastAPI) | http://localhost:8000/docs
-Streamlit Dashboard | http://localhost:8501
-React Dashboard | http://localhost:5173
+## Local URLs
+| Service | URL |
+|:------|:------------|
+| **API Docs (FastAPI)** | http://localhost:8000/docs |
+| **Streamlit Dashboard** | http://localhost:8501 |
+| **React Dashboard** | http://localhost:5173 |
 
 Notes
 - BigQuery Fallback: If credentials are missing, the system uses backend/data/sample_data.csv.
 - LLM Integration: Uses Gemini (Vertex AI) if configured; otherwise falls back to a local template LLM stub.
 - Explainability: SHAP demo uses an in-memory XGBoost model trained on the sample dataset.
 
-#.env.example
+# .env.example
 ```
 # ==== BigQuery ====
 PROJECT_ID=your-gcp-project
